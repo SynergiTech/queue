@@ -1,8 +1,8 @@
 {
-    "name": "synergitech/daemon",
-    "description" : "FuelPHP 1.x Auth Package",
+    "name": "synergitech/queue",
+    "description" : "FuelPHP library to integrate easy RabbitMQ publish/consume",
     "type": "fuel-package",
-    "homepage": "https://github.com/synergitech/fuelphp-daemon",
+    "homepage": "https://github.com/synergitech/fuelphp-queue",
     "license": "MIT",
     "authors": [
         {
