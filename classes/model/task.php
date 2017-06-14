@@ -35,10 +35,10 @@ class Task extends \Orm\Model
 
     private static $rabbitmq = null;
 
-    public static function getRabbitChannel($conf)
+    public static function getRabbitChannel()
     {
         if (self::$rabbitmq == null) {
-            $connection = new AMQPStreamConnection($conf['host'], $conf['port'], $conf['user'], $conf['password'], $conf['vhost']);
+            $connection = new AMQPStreamConnection(\Config::get('host'), \Config::get('port'), \Config::get('user'), \Config::get('password'), \Config::get('vhost'));
             $channel = $connection->channel();
 
             $channel->queue_declare(\Queue\Worker::getQueue(), false, true, false, false, false, ['x-max-priority' => ['I', 10]]);
@@ -51,8 +51,7 @@ class Task extends \Orm\Model
 
     public static function enqueue($task, $args = [], $priority = null)
     {
-        $queue = \Config::load("queue");
-
+        $queue = \Config::load('queue');
         // task uuid
         $uuid = \Str::random('uuid');
 
@@ -79,7 +78,7 @@ class Task extends \Orm\Model
             return;
         }
 
-        $rabbitmq = self::getRabbitChannel($queue);
+        $rabbitmq = self::getRabbitChannel();
 
         $msg = new AMQPMessage($body, array(
             'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT
