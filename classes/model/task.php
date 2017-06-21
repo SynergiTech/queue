@@ -75,7 +75,7 @@ class Task extends \Orm\Model
 
         if (false and \Fuel::$env == 'development') {
             call_user_func_array($task, $args);
-            return;
+            return $taskqueue->id;
         }
 
         $rabbitmq = self::getRabbitChannel();
@@ -83,6 +83,7 @@ class Task extends \Orm\Model
         $msg = new AMQPMessage($body, array(
             'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT
         ));
-        return $rabbitmq->basic_publish($msg, '', \Queue\Worker::getQueue());
+        $rabbitmq->basic_publish($msg, '', \Queue\Worker::getQueue());
+        return $taskqueue->id;
     }
 }
