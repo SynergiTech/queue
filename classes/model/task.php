@@ -14,6 +14,7 @@ class Task extends \Orm\Model
         'state',
         'error_message' => ['default' => null],
         'uuid',
+        'priority',
         'user_id',
         'created_at',
         'started_at',
@@ -73,16 +74,20 @@ class Task extends \Orm\Model
 
         $taskqueue->save();
 
-        if (false and \Fuel::$env == 'development') {
+        if (in_array(\Fuel::$env, \Config::get('autorun', ['development']))) {
             call_user_func_array($task, $args);
             return $taskqueue->id;
         }
 
         $rabbitmq = self::getRabbitChannel();
 
-        $msg = new AMQPMessage($body, array(
-            'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT
-        ));
+        $params = array(
+            'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT,
+        );
+        if ($taskqueue->priority != null) {
+            $params['priority'] = $taskqueue->priority;
+        }
+        $msg = new AMQPMessage($body, $params);
         $rabbitmq->basic_publish($msg, '', \Queue\Worker::getQueue());
         return $taskqueue->id;
     }
