@@ -81,6 +81,10 @@ class Worker
 
             $task->state = 'success';
             $return = true;
+        } catch (\Throwable $e) {
+            $task->state = 'error';
+            $task->error_message = $e->getMessage();
+            \Log::error($e->getMessage(), array('exception' => $e));
         } catch (\Exception $e) {
             $task->state = 'error';
             $task->error_message = $e->getMessage();
