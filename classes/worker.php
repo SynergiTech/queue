@@ -53,6 +53,17 @@ class Worker
         $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
     }
 
+    public function restartDB()
+    {
+        foreach (\Config::get('db') as $db => $_) {
+            try {
+                \DB::instance()->disconnect($db);
+                \DB::instance()->connect($db);
+            } catch (\Database_Exception $e) {
+            }
+        }
+    }
+
     private function execute($task)
     {
         if (!($task instanceof \Queue\Task) or $task->state !== 'pending') {
@@ -76,7 +87,9 @@ class Worker
             $args = json_decode($task->args);
 
             $this->event('pre-execute', [$task]);
+            $this->restartDB();
             $result = call_user_func_array($task->task, $args);
+            $this->restartDB();
             $this->event('post-execute', [$task, $result]);
 
             $task->state = 'success';
@@ -90,6 +103,7 @@ class Worker
             $task->error_message = $e->getMessage();
             \Log::error($e->getMessage(), array('exception' => $e));
         } finally {
+            $this->restartDB();
             $task->save();
         }
 
