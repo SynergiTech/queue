@@ -16,7 +16,7 @@ class Worker
             \Orm\Query::caching(false);
         }
 
-        $config = array_merge_recursive(\Config::load('queue'), $config);
+        $config = array_merge_recursive(\Config::get('queue'), $config);
 
         $this->config = $config;
     }
@@ -117,16 +117,9 @@ class Worker
         }
     }
 
-    public static function getConfig($opt)
-    {
-        \Config::load('queue');
-        return \Config::get($opt);
-    }
-
     public static function getQueue()
     {
-        $queue = self::getConfig('queue');
-        return $queue.'-'.\Fuel::$env;
+        return \Config::get('queue.queue').'-'.\Fuel::$env;
     }
 
     public function configureConsumer()
