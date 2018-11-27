@@ -38,7 +38,6 @@ class Task extends \Orm\Model
 
     public static function getRabbitChannel()
     {
-
         if (self::$rabbitmq == null) {
             $config = \Config::get('queue');
             $connection = new AMQPStreamConnection($config['host'], $config['port'], $config['user'], $config['password'], $config['vhost']);
@@ -52,9 +51,15 @@ class Task extends \Orm\Model
         return self::$rabbitmq;
     }
 
+    /**
+     * Enqueue a task as a message on rabbitmq
+     * @param callable $task The callback to execute on the worker
+     * @param array $args Arguments to pass to the callback
+     * @param int $priority Priority of message in rabbitmq
+     * @return int Primary key of the new \Queue\Task
+     */
     public static function enqueue($task, $args = [], $priority = null)
     {
-        // task uuid
         $uuid = \Str::random('uuid');
 
         $body = json_encode(array(
