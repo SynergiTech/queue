@@ -7,13 +7,13 @@
 ```php
 class MyTask
 {
-  public static function doSomething($argument)
+  public static function sum(...$args)
   {
-    return true;
+    return array_sum($args);
   }
 }
 
-Queue\Task::enqueue(MyTask::class, 'doSomething', ['unused'], 3)
+Queue\Task::enqueue([MyTask::class, 'multiply'], [2, 4], 3); # 6
 ```
 
 ## Configuration
