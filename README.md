@@ -1,6 +1,12 @@
-# fuelphp-queue
+# synergitech/queue
 
 > An abstraction over RabbitMQ for use in FuelPHP.
+
+## Installation
+
+```
+$ composer require synergitech/queue 
+```
 
 ## Usage
 
