@@ -13,7 +13,7 @@ class MyTask
   }
 }
 
-Queue\Task::enqueue([MyTask::class, 'multiply'], [2, 4], 3); # 6
+Queue\Task::enqueue([MyTask::class, 'sum'], [2, 4], 3); # 6
 ```
 
 ## Configuration
