@@ -97,10 +97,12 @@ class Worker
         } catch (\Throwable $e) {
             $task->state = 'error';
             $task->error_message = $e->getMessage();
+            $this->event('error', [$task, $e]);
             \Log::error($e->getMessage(), array('exception' => $e));
         } catch (\Exception $e) {
             $task->state = 'error';
             $task->error_message = $e->getMessage();
+            $this->event('error', [$task, $e]);
             \Log::error($e->getMessage(), array('exception' => $e));
         } finally {
             $this->restartDB();
