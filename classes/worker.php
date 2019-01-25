@@ -88,19 +88,25 @@ class Worker
 
             $this->event('pre-execute', [$task]);
             $this->restartDB();
+
+            $execution_start_time = microtime(true);
             $result = call_user_func_array($task->task, $args);
+            $duration = microtime(true) - $execution_start_time;
+
             $this->restartDB();
-            $this->event('post-execute', [$task, $result]);
+            $this->event('post-execute', [$task, $result, $duration]);
 
             $task->state = 'success';
             $return = true;
         } catch (\Throwable $e) {
             $task->state = 'error';
             $task->error_message = $e->getMessage();
+            $this->event('error', [$task, $e]);
             \Log::error($e->getMessage(), array('exception' => $e));
         } catch (\Exception $e) {
             $task->state = 'error';
             $task->error_message = $e->getMessage();
+            $this->event('error', [$task, $e]);
             \Log::error($e->getMessage(), array('exception' => $e));
         } finally {
             $this->restartDB();
