@@ -88,9 +88,13 @@ class Worker
 
             $this->event('pre-execute', [$task]);
             $this->restartDB();
+
+            $execution_start_time = microtime(true);
             $result = call_user_func_array($task->task, $args);
+            $duration = microtime(true) - $execution_start_time;
+
             $this->restartDB();
-            $this->event('post-execute', [$task, $result]);
+            $this->event('post-execute', [$task, $result, $duration]);
 
             $task->state = 'success';
             $return = true;
