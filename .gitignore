@@ -8,3 +8,5 @@ desktop.ini
 .settings
 nbproject/
 .idea
+vendor/
+composer.lock

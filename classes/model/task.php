@@ -60,7 +60,7 @@ class Task extends \Orm\Model
      */
     public static function enqueue($task, $args = [], $priority = null)
     {
-        $uuid = \Str::random('uuid');
+        $uuid = \Ramsey\Uuid\Uuid::uuid4();
 
         $body = json_encode(array(
             'task' => $task,
