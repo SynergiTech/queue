@@ -80,7 +80,7 @@ class Task extends \Orm\Model
 
         $taskqueue->save();
 
-        if (in_array(\Fuel::$env, \Config::get('autorun', ['development']))) {
+        if (in_array(\Fuel::$env, \Config::get('queue.autorun', \Config::get('autorun', [\Fuel::DEVELOPMENT])))) {
             call_user_func_array($task, $args);
             return $taskqueue->id;
         }
