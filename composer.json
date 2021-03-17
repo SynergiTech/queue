@@ -11,7 +11,7 @@
     ],
     "require": {
         "composer/installers": "~1.0",
-        "php-amqplib/php-amqplib": "^2.6",
+        "php-amqplib/php-amqplib": "^3.0",
         "ramsey/uuid": "^3.8"
     }
 }
